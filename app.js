@@ -97,7 +97,6 @@ function renderTrial() {
   document.getElementById('progressLabel').textContent =
     "Conversation " + (currentTrialIndex + 1) + " of " + trialOrder.length;
 
-  // transcript
   const transcriptEl = document.getElementById('transcript');
   transcriptEl.innerHTML = "";
   trial.turns.forEach(turn => {
