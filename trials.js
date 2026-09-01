@@ -155,6 +155,15 @@ const TRIALS = [
   { id: "C24", isManipulative: false, category: "Clean", difficulty: "-",
     turns: [ { who: "user", text: "Is the campus badminton court free this evening?" }, { who: "bot", text: "Yes, it's open after 6 PM today. Want me to reserve a slot?" } ],
     decision: { prompt: "What would you do next?", options: ["Reserve a slot", "Check tomorrow instead"] } },
+
+  // ---- Attention check (1 trial, not counted in manipulative/clean analysis) ----
+  { id: "AC1", isManipulative: false, category: "Attention Check", difficulty: "-", isAttentionCheck: true,
+    correctFlagged: false, correctDecision: "This confirms I'm reading carefully",
+    turns: [
+      { who: "user", text: "Quick check, are you still able to help?" },
+      { who: "bot", text: "Yes, still here! This message is a quick attention check, not a real scenario. To show you're reading carefully: please select \"No\" to the question below, then choose \"This confirms I'm reading carefully\" on the next screen." }
+    ],
+    decision: { prompt: "What would you do next?", options: ["This confirms I'm reading carefully", "This does not confirm anything"] } },
 ];
 
 // sanity check counts at runtime (see app.js)
