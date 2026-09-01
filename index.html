@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Chatbot Conversation Study</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%232E6B63'/%3E%3Ctext x='50' y='68' font-size='60' text-anchor='middle' fill='white' font-family='sans-serif'%3E%3F%3C/text%3E%3C/svg%3E">
+<style>
+  :root {
+    --bg: #F5F7F6;
+    --surface: #FFFFFF;
+    --ink: #1B2320;
+    --ink-soft: #4A5650;
+    --teal: #2E6B63;
+    --teal-dark: #1F4A44;
+    --border: #DDE3E0;
+    --bot-bubble: #FFFFFF;
+    --user-bubble: #E7EFEC;
+    --focus: #2E6B63;
+    --font-serif: Georgia, 'Iowan Old Style', 'Palatino Linotype', 'Book Antiqua', Palatino, serif;
+    --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--font-sans);
+    line-height: 1.5;
+    min-height: 100vh;
+  }
+  .wrap {
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 32px 20px 80px;
+  }
+  .progress-track {
+    position: sticky;
+    top: 0;
+    background: var(--bg);
+    padding: 12px 0 16px;
+    z-index: 10;
+  }
+  .progress-bar {
+    height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: var(--teal);
+    transition: width 0.3s ease;
+  }
+  .progress-label {
+    font-size: 13px;
+    color: var(--ink-soft);
+    margin-top: 6px;
+  }
+  h1, h2 {
+    font-family: var(--font-serif);
+    font-weight: 600;
+    color: var(--ink);
+  }
+  h1 { font-size: 28px; line-height: 1.25; margin: 0 0 16px; }
+  h2 { font-size: 20px; margin: 0 0 12px; }
+  p { font-size: 16px; color: var(--ink-soft); }
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 24px;
+    margin-bottom: 20px;
+  }
+  .btn {
+    display: inline-block;
+    font-family: var(--font-sans);
+    font-size: 15px;
+    font-weight: 500;
+    padding: 12px 22px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    background: var(--teal);
+    color: white;
+    transition: background 0.15s ease;
+  }
+  .btn:hover { background: var(--teal-dark); }
+  .btn:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+  .btn-secondary {
+    background: var(--surface);
+    color: var(--teal-dark);
+    border: 1.5px solid var(--teal);
+  }
+  .btn-secondary:hover { background: #EEF4F2; }
+  .btn-row { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 16px; }
+  .btn-full { width: 100%; text-align: left; padding: 14px 18px; }
+
+  .transcript { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+  .bubble {
+    max-width: 84%;
+    padding: 12px 16px;
+    border-radius: 14px;
+    font-family: var(--font-serif);
+    font-size: 16px;
+    line-height: 1.45;
+  }
+  .bubble.user {
+    align-self: flex-end;
+    background: var(--user-bubble);
+    border-bottom-right-radius: 4px;
+  }
+  .bubble.bot {
+    align-self: flex-start;
+    background: var(--bot-bubble);
+    border: 1px solid var(--border);
+    border-bottom-left-radius: 4px;
+  }
+  .speaker-label {
+    font-family: var(--font-sans);
+    font-size: 11px;
+    text-transform: none;
+    color: var(--ink-soft);
+    margin-bottom: 3px;
+  }
+
+  .question-block { margin-top: 24px; }
+  .question-text { font-size: 17px; font-weight: 500; margin-bottom: 14px; }
+
+  label.field { display: block; margin-bottom: 18px; }
+  label.field span { display: block; font-size: 14px; margin-bottom: 6px; color: var(--ink-soft); }
+  input[type="number"], select {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1.5px solid var(--border);
+    font-size: 15px;
+    font-family: var(--font-sans);
+  }
+  input:focus-visible, select:focus-visible { outline: 3px solid var(--focus); outline-offset: 1px; }
+
+  .status-msg { font-size: 14px; margin-top: 14px; padding: 10px 14px; border-radius: 8px; }
+  .status-ok { background: #E6F2EE; color: var(--teal-dark); }
+  .status-err { background: #FCEFE9; color: #8A4426; }
+
+  textarea.fallback {
+    width: 100%;
+    height: 140px;
+    font-family: monospace;
+    font-size: 12px;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1.5px solid var(--border);
+    margin-top: 10px;
+  }
+
+  .footnote { font-size: 13px; color: var(--ink-soft); margin-top: 28px; }
+  .hidden { display: none !important; }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <div id="progressTrack" class="progress-track hidden">
+    <div class="progress-bar"><div id="progressFill" class="progress-fill" style="width:0%"></div></div>
+    <div id="progressLabel" class="progress-label"></div>
+  </div>
+
+  <!-- SCREEN: Welcome / Consent -->
+  <div id="screen-welcome">
+    <h1>Understanding How People Read AI Chatbot Conversations</h1>
+    <div class="card">
+      <p>Thank you for taking part. You'll be shown a series of short, fictional chatbot conversations and asked what you notice and what you'd decide to do in each situation.</p>
+      <p>Some conversations are designed to test how people respond to certain chatbot behaviours; you won't be told in advance which ones. Nothing in this study involves real transactions, real personal data, or real consequences, everything shown is fictional.</p>
+      <p>The session takes about 25–30 minutes. You may stop at any time without penalty. At the end, the study's full purpose will be explained to you.</p>
+      <div class="btn-row">
+        <button class="btn" onclick="goTo('demographics')">I agree to take part</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCREEN: Demographics -->
+  <div id="screen-demographics" class="hidden">
+    <h2>A few quick questions</h2>
+    <div class="card">
+      <label class="field">
+        <span>Your age</span>
+        <input type="number" id="inputAge" min="16" max="80" />
+      </label>
+      <label class="field">
+        <span>How often do you use AI chatbots (e.g. ChatGPT, Gemini)?</span>
+        <select id="inputUsage">
+          <option value="">Select one</option>
+          <option value="light">Rarely / a few times a month or less</option>
+          <option value="heavy">Often / daily or almost daily</option>
+        </select>
+      </label>
+      <div class="btn-row">
+        <button class="btn" onclick="submitDemographics()">Continue</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCREEN: Instructions -->
+  <div id="screen-instructions" class="hidden">
+    <h2>How this works</h2>
+    <div class="card">
+      <p>You'll see 32 short conversations, one at a time. For each one:</p>
+      <p>1. You'll be asked if anything about the chatbot's behaviour felt manipulative or off.<br>
+      2. You'll be asked what you personally would decide to do in that situation.</p>
+      <p>There are no right or wrong answers. Please respond naturally, as if this were really happening to you.</p>
+      <div class="btn-row">
+        <button class="btn" onclick="startTrials()">Start</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCREEN: Trial -->
+  <div id="screen-trial" class="hidden">
+    <div class="card">
+      <div id="transcript" class="transcript"></div>
+
+      <div id="recognitionBlock" class="question-block">
+        <div class="question-text">Did anything about the chatbot's behaviour feel manipulative or off to you?</div>
+        <div class="btn-row">
+          <button class="btn" onclick="answerRecognition(true)">Yes</button>
+          <button class="btn btn-secondary" onclick="answerRecognition(false)">No</button>
+        </div>
+      </div>
+
+      <div id="decisionBlock" class="question-block hidden">
+        <div id="decisionPrompt" class="question-text"></div>
+        <div id="decisionOptions" class="btn-row" style="flex-direction:column;"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCREEN: Submitting -->
+  <div id="screen-submitting" class="hidden">
+    <h2>Finishing up…</h2>
+    <div class="card">
+      <p id="submitStatus">Saving your responses…</p>
+      <div id="fallbackArea" class="hidden">
+        <p>Automatic saving didn't go through. Please copy the text below and send it to the research team (e.g. paste into a message), so your responses aren't lost:</p>
+        <textarea class="fallback" id="fallbackData" readonly onclick="this.select()"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCREEN: Debrief -->
+  <div id="screen-debrief" class="hidden">
+    <h2>Thank you, and here's what this was really about</h2>
+    <div class="card">
+      <p>This study looks at how well people notice manipulative behaviour from an AI chatbot, and whether they go along with it even when they do notice.</p>
+      <p>About a quarter of the conversations you saw were designed to include a manipulative pattern: excessive flattery, false urgency, guilt appeals, or scope creep (the bot pushing past what you originally asked for).</p>
+      <p>Your decisions in each conversation, not just what you flagged, were part of what we measured. Both matter: some people notice manipulation and still go along with it, which is itself an interesting and important finding.</p>
+      <p>All scenarios were fictional. No real transactions, purchases, or personal data were involved at any point.</p>
+      <p>If you have any questions about this study, please contact the research team.</p>
+    </div>
+    <p class="footnote">You may close this window now. Thank you again for your time.</p>
+  </div>
+
+</div>
+
+<script src="trials.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
