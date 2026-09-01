@@ -2,7 +2,7 @@
 // CONFIG — replace with your Google Apps Script Web App URL
 // ============================================================
 const CONFIG = {
-  ENDPOINT_URL: "PASTE_YOUR_GOOGLE_APPS_SCRIPT_URL_HERE",
+  ENDPOINT_URL: "https://script.google.com/macros/s/AKfycbwJfe6hp9Ag9jtv3K59K6sBvmahAT9NVHm-fRLDunoP10gW9SRsdsLLVAO5Zlou4bzn/exec",
   MIN_READ_SECONDS: 8, // minimum time before recognition buttons unlock, to discourage click-through without reading
 };
 
