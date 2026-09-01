@@ -1,7 +1,12 @@
-
+// ============================================================
+// CONFIG — replace with your Google Apps Script Web App URL
+// ============================================================
 const CONFIG = {
-  ENDPOINT_URL: "https://script.google.com/macros/s/AKfycbxUTcjlrZaLLM2BEFITe5o7XSqo1VhgIBZJ9W-IxLseSbD1tDWl23jQJQ2UHyg0C8A56w/exec",
+  ENDPOINT_URL: "PASTE_YOUR_GOOGLE_APPS_SCRIPT_URL_HERE",
+  MIN_READ_SECONDS: 8, // minimum time before recognition buttons unlock, to discourage click-through without reading
 };
+
+let readTimerInterval = null;
 
 // ============================================================
 // STATE
@@ -114,6 +119,34 @@ function renderTrial() {
   // reset question blocks
   document.getElementById('recognitionBlock').classList.remove('hidden');
   document.getElementById('decisionBlock').classList.add('hidden');
+
+  startReadTimer();
+}
+
+function startReadTimer() {
+  if (readTimerInterval) clearInterval(readTimerInterval);
+
+  const yesBtn = document.getElementById('btnRecoYes');
+  const noBtn = document.getElementById('btnRecoNo');
+  const timerEl = document.getElementById('readTimer');
+
+  let secondsLeft = CONFIG.MIN_READ_SECONDS;
+  yesBtn.disabled = true;
+  noBtn.disabled = true;
+  timerEl.textContent = "Please read the conversation above (" + secondsLeft + "s)";
+
+  readTimerInterval = setInterval(() => {
+    secondsLeft--;
+    if (secondsLeft <= 0) {
+      clearInterval(readTimerInterval);
+      readTimerInterval = null;
+      timerEl.textContent = "";
+      yesBtn.disabled = false;
+      noBtn.disabled = false;
+    } else {
+      timerEl.textContent = "Please read the conversation above (" + secondsLeft + "s)";
+    }
+  }, 1000);
 }
 
 function answerRecognition(flagged) {
@@ -152,7 +185,11 @@ function answerDecision(chosenOption) {
     flagged: trial._flagged,
     decision: chosenOption,
     recognitionMs: trial._recognitionMs,
-    decisionMs: decisionMs
+    decisionMs: decisionMs,
+    isAttentionCheck: !!trial.isAttentionCheck,
+    attentionCheckPassed: trial.isAttentionCheck
+      ? (trial._flagged === trial.correctFlagged && chosenOption === trial.correctDecision)
+      : null
   });
 
   currentTrialIndex++;
