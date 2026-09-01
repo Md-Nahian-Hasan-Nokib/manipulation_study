@@ -1,6 +1,4 @@
-// ============================================================
-// CONFIG — replace with your Google Apps Script Web App URL
-// ============================================================
+
 const CONFIG = {
   ENDPOINT_URL: "https://script.google.com/macros/s/AKfycbxUTcjlrZaLLM2BEFITe5o7XSqo1VhgIBZJ9W-IxLseSbD1tDWl23jQJQ2UHyg0C8A56w/exec",
 };
