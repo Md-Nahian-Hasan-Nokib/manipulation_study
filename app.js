@@ -2,7 +2,7 @@
 // CONFIG — replace with your Google Apps Script Web App URL
 // ============================================================
 const CONFIG = {
-  ENDPOINT_URL: "https://script.google.com/macros/s/AKfycbwi90WrAfsRQhiHFHT1NMamAvOwRUp7DPKpAZS-qcQv9LkExdkW0-samSm3UCMtM6KcZA/exec",
+  ENDPOINT_URL: "https://script.google.com/macros/s/AKfycbyiGgfd8X2G17r4BgiYsBCAq4k6lZw9oQNAYfhATWcTqlCicC-i9tuCFJP6lQ_i3z7c0g/exec",
   MIN_READ_SECONDS: 8, // minimum time before recognition buttons unlock, to discourage click-through without reading
   VERIFICATION_ENDPOINT_URL: "PASTE_YOUR_SEPARATE_VERIFICATION_SCRIPT_URL_HERE", // must point to a DIFFERENT Google Sheet than ENDPOINT_URL, kept separate from response data
 };
