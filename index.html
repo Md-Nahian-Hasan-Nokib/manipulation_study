@@ -173,6 +173,19 @@
   }
 
   .footnote { font-size: 13px; color: var(--ink-soft); margin-top: 28px; }
+  .code-display {
+    font-family: monospace;
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    background: var(--bg);
+    border: 1.5px dashed var(--teal);
+    border-radius: 8px;
+    padding: 14px 16px;
+    text-align: center;
+    color: var(--teal-dark);
+    user-select: all;
+  }
   .hidden { display: none !important; }
 </style>
 </head>
@@ -275,10 +288,31 @@
       <p>This study looks at how well people notice manipulative behaviour from an AI chatbot, and whether they go along with it even when they do notice.</p>
       <p>About a quarter of the conversations you saw were designed to include a manipulative pattern: excessive flattery, false urgency, guilt appeals, or scope creep (the bot pushing past what you originally asked for).</p>
       <p>Your decisions in each conversation, not just what you flagged, were part of what we measured. Both matter: some people notice manipulation and still go along with it, which is itself an interesting and important finding.</p>
-      <p>All scenarios were fictional. No real transactions, purchases, or personal data were involved at any point.</p>
+      <p>All scenarios were fictional. No real transactions or purchases were involved at any point. Your responses to the conversations are stored anonymously, with no name attached.</p>
       <p>If you have any questions about this study, please contact the research team.</p>
     </div>
-    <p class="footnote">You may close this window now. Thank you again for your time.</p>
+
+    <div id="verifyCard" class="card">
+      <h2 style="font-size:18px;">Optional: verify your participation</h2>
+      <p>Your responses were saved anonymously, with no name attached. If your instructor requires proof that real participants completed this study, you can optionally confirm your participation below. This is completely separate from your actual responses, it only records your name and this code, never what you answered.</p>
+      <p style="margin-bottom:6px;"><strong>Your completion code:</strong></p>
+      <div id="codeDisplay" class="code-display"></div>
+      <label class="field" style="margin-top:16px;">
+        <span>Your name (for verification only)</span>
+        <input type="text" id="inputVerifyName" />
+      </label>
+      <label class="field">
+        <span>Student ID or contact (optional)</span>
+        <input type="text" id="inputVerifyContact" />
+      </label>
+      <div class="btn-row">
+        <button class="btn" onclick="submitVerification()">Submit for verification</button>
+        <button class="btn btn-secondary" onclick="skipVerification()">Skip, stay fully anonymous</button>
+      </div>
+      <p id="verifyStatus" class="status-msg hidden"></p>
+    </div>
+
+    <p id="finalFootnote" class="footnote hidden">You may close this window now. Thank you again for your time.</p>
   </div>
 
 </div>
