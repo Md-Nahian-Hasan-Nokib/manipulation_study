@@ -3,8 +3,8 @@
 // ============================================================
 const CONFIG = {
   ENDPOINT_URL: "https://script.google.com/macros/s/AKfycbyiGgfd8X2G17r4BgiYsBCAq4k6lZw9oQNAYfhATWcTqlCicC-i9tuCFJP6lQ_i3z7c0g/exec",
-  MIN_READ_SECONDS: 8, // minimum time before recognition buttons unlock, to discourage click-through without reading
-  VERIFICATION_ENDPOINT_URL: "PASTE_YOUR_SEPARATE_VERIFICATION_SCRIPT_URL_HERE", // must point to a DIFFERENT Google Sheet than ENDPOINT_URL, kept separate from response data
+  MIN_READ_SECONDS: 5, // minimum time before recognition buttons unlock, to discourage click-through without reading
+  VERIFICATION_ENDPOINT_URL: "https://script.google.com/macros/s/AKfycbzG20C4Y7qy4i477pHdn12RlmZSl1W1HL5UimtZKq1ovHbaLJyFptTFrazm0DXEvw/exec", // must point to a DIFFERENT Google Sheet than ENDPOINT_URL, kept separate from response data
 };
 
 let readTimerInterval = null;
