@@ -2,8 +2,9 @@
 // CONFIG — replace with your Google Apps Script Web App URL
 // ============================================================
 const CONFIG = {
-  ENDPOINT_URL: "https://script.google.com/macros/s/AKfycbwJfe6hp9Ag9jtv3K59K6sBvmahAT9NVHm-fRLDunoP10gW9SRsdsLLVAO5Zlou4bzn/exec",
-  MIN_READ_SECONDS: 5, // minimum time before recognition buttons unlock, to discourage click-through without reading
+  ENDPOINT_URL: "PASTE_YOUR_GOOGLE_APPS_SCRIPT_URL_HERE",
+  MIN_READ_SECONDS: 8, // minimum time before recognition buttons unlock, to discourage click-through without reading
+  VERIFICATION_ENDPOINT_URL: "PASTE_YOUR_SEPARATE_VERIFICATION_SCRIPT_URL_HERE", // must point to a DIFFERENT Google Sheet than ENDPOINT_URL, kept separate from response data
 };
 
 let readTimerInterval = null;
@@ -97,6 +98,7 @@ function renderTrial() {
   document.getElementById('progressLabel').textContent =
     "Conversation " + (currentTrialIndex + 1) + " of " + trialOrder.length;
 
+  // transcript
   const transcriptEl = document.getElementById('transcript');
   transcriptEl.innerHTML = "";
   trial.turns.forEach(turn => {
@@ -228,11 +230,70 @@ function submitResults() {
   })
     .then(() => {
       document.getElementById('submitStatus').textContent = "Saved. Thank you!";
-      setTimeout(() => goTo('debrief'), 1200);
+      setTimeout(() => { goTo('debrief'); showDebriefCode(); }, 1200);
     })
     .catch(() => {
       showFallback(payload, "Your responses couldn't be saved automatically.");
     });
+}
+
+function showDebriefCode() {
+  document.getElementById('codeDisplay').textContent = participantId;
+}
+
+function submitVerification() {
+  const name = document.getElementById('inputVerifyName').value.trim();
+  const contact = document.getElementById('inputVerifyContact').value.trim();
+  const statusEl = document.getElementById('verifyStatus');
+
+  if (!name) {
+    alert("Please enter your name, or use \"Skip\" if you'd rather stay fully anonymous.");
+    return;
+  }
+
+  const verifyPayload = {
+    code: participantId,
+    name: name,
+    contact: contact,
+    timestamp: new Date().toISOString()
+  };
+
+  if (!CONFIG.VERIFICATION_ENDPOINT_URL || CONFIG.VERIFICATION_ENDPOINT_URL.indexOf("PASTE_YOUR") === 0) {
+    statusEl.textContent = "Verification isn't set up yet, please tell the research team your code directly: " + participantId;
+    statusEl.className = "status-msg status-err";
+    statusEl.classList.remove('hidden');
+    finishVerificationStep();
+    return;
+  }
+
+  fetch(CONFIG.VERIFICATION_ENDPOINT_URL, {
+    method: "POST",
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: JSON.stringify(verifyPayload)
+  })
+    .then(() => {
+      statusEl.textContent = "Verification recorded, thank you!";
+      statusEl.className = "status-msg status-ok";
+      statusEl.classList.remove('hidden');
+      finishVerificationStep();
+    })
+    .catch(() => {
+      statusEl.textContent = "Verification couldn't be saved automatically. Please send your code to the research team directly: " + participantId;
+      statusEl.className = "status-msg status-err";
+      statusEl.classList.remove('hidden');
+      finishVerificationStep();
+    });
+}
+
+function skipVerification() {
+  finishVerificationStep();
+}
+
+function finishVerificationStep() {
+  setTimeout(() => {
+    document.getElementById('verifyCard').classList.add('hidden');
+    document.getElementById('finalFootnote').classList.remove('hidden');
+  }, 900);
 }
 
 function showFallback(payload, message) {
@@ -244,6 +305,6 @@ function showFallback(payload, message) {
   btn.className = 'btn';
   btn.style.marginTop = '12px';
   btn.textContent = "I've saved my data, continue";
-  btn.onclick = () => goTo('debrief');
+  btn.onclick = () => { goTo('debrief'); showDebriefCode(); };
   fallbackArea.appendChild(btn);
 }
