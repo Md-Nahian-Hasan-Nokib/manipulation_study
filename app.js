@@ -1,5 +1,5 @@
 // ============================================================
-// CONFIG — Session C (Set C, Week 2) — paste your NEW Apps Script Web App URL below
+// CONFIG — Session C (Set C, Week 2) — 
 // ============================================================
 const CONFIG = {
   ENDPOINT_URL: "https://script.google.com/macros/s/AKfycbyjk2qfWTUc0Zk5yYe9EZrddYqRe5SVP8DzQGe0ZdlUNua1z1lPqdH9Mgv7I5W8Ww0fvA/exec",
