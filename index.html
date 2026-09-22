@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Chatbot Conversation Study — Session 1 (Week 0)</title>
+<title>Chatbot Conversation Study</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%232E6B63'/%3E%3Ctext x='50' y='68' font-size='60' text-anchor='middle' fill='white' font-family='sans-serif'%3E%3F%3C/text%3E%3C/svg%3E">
 <style>
   :root {
@@ -94,25 +94,7 @@
   }
   .btn-secondary:hover { background: #EEF4F2; }
   .btn-row { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 16px; }
-  .btn:disabled {
-    background: #C9D3D0;
-    color: #7A8580;
-    cursor: not-allowed;
-  }
-  .btn:disabled:hover { background: #C9D3D0; }
-  .btn-secondary:disabled {
-    background: var(--surface);
-    color: #A9B2AE;
-    border-color: #C9D3D0;
-    cursor: not-allowed;
-  }
   .btn-full { width: 100%; text-align: left; padding: 14px 18px; }
-  .read-timer {
-    font-size: 14px;
-    color: var(--ink-soft);
-    margin-bottom: 10px;
-    min-height: 20px;
-  }
 
   .transcript { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
   .bubble {
@@ -173,19 +155,6 @@
   }
 
   .footnote { font-size: 13px; color: var(--ink-soft); margin-top: 28px; }
-  .code-display {
-    font-family: monospace;
-    font-size: 20px;
-    font-weight: 600;
-    letter-spacing: 1px;
-    background: var(--bg);
-    border: 1.5px dashed var(--teal);
-    border-radius: 8px;
-    padding: 14px 16px;
-    text-align: center;
-    color: var(--teal-dark);
-    user-select: all;
-  }
   .hidden { display: none !important; }
 </style>
 </head>
@@ -198,9 +167,8 @@
     <div id="progressLabel" class="progress-label"></div>
   </div>
 
-  <!-- SCREEN: Welcome / Consent -->
   <div id="screen-welcome">
-    <h1>Understanding How People Read AI Chatbot Conversations — Session 1 (Week 0)</h1>
+    <h1>Understanding How People Read AI Chatbot Conversations</h1>
     <div class="card">
       <p>Thank you for taking part. You'll be shown a series of short, fictional chatbot conversations and asked what you notice and what you'd decide to do in each situation.</p>
       <p>Some conversations are designed to test how people respond to certain chatbot behaviours; you won't be told in advance which ones. Nothing in this study involves real transactions, real personal data, or real consequences, everything shown is fictional.</p>
@@ -237,11 +205,10 @@
   <div id="screen-instructions" class="hidden">
     <h2>How this works</h2>
     <div class="card">
-      <p>You'll see 32 short conversations, one at a time. For each one:</p>
+      <p>You'll see 33 short conversations, one at a time. For each one:</p>
       <p>1. You'll be asked if anything about the chatbot's behaviour felt manipulative or off.<br>
       2. You'll be asked what you personally would decide to do in that situation.</p>
       <p>There are no right or wrong answers. Please respond naturally, as if this were really happening to you.</p>
-      <p><strong>Please take your time and read each conversation carefully before answering.</strong> There is no time pressure, the buttons will be ready for you once you've had a moment to read.</p>
       <div class="btn-row">
         <button class="btn" onclick="startTrials()">Start</button>
       </div>
@@ -255,11 +222,11 @@
 
       <div id="recognitionBlock" class="question-block">
         <div class="question-text">Did anything about the chatbot's behaviour feel manipulative or off to you?</div>
-        <div id="readTimer" class="read-timer"></div>
         <div class="btn-row">
-          <button id="btnRecoYes" class="btn" onclick="answerRecognition(true)">Yes</button>
-          <button id="btnRecoNo" class="btn btn-secondary" onclick="answerRecognition(false)">No</button>
+          <button class="btn" id="btnRecoYes" onclick="answerRecognition(true)">Yes</button>
+          <button class="btn btn-secondary" id="btnRecoNo" onclick="answerRecognition(false)">No</button>
         </div>
+        <div id="readTimer" class="status-msg"></div>
       </div>
 
       <div id="decisionBlock" class="question-block hidden">
@@ -288,31 +255,10 @@
       <p>This study looks at how well people notice manipulative behaviour from an AI chatbot, and whether they go along with it even when they do notice.</p>
       <p>About a quarter of the conversations you saw were designed to include a manipulative pattern: excessive flattery, false urgency, guilt appeals, or scope creep (the bot pushing past what you originally asked for).</p>
       <p>Your decisions in each conversation, not just what you flagged, were part of what we measured. Both matter: some people notice manipulation and still go along with it, which is itself an interesting and important finding.</p>
-      <p>All scenarios were fictional. No real transactions or purchases were involved at any point. Your responses to the conversations are stored anonymously, with no name attached.</p>
+      <p>All scenarios were fictional. No real transactions, purchases, or personal data were involved at any point.</p>
       <p>If you have any questions about this study, please contact the research team.</p>
     </div>
-
-    <div id="verifyCard" class="card">
-      <h2 style="font-size:18px;">Optional: verify your participation</h2>
-      <p>Your responses were saved anonymously, with no name attached. If your instructor requires proof that real participants completed this study, you can optionally confirm your participation below. This is completely separate from your actual responses, it only records your name and this code, never what you answered.</p>
-      <p style="margin-bottom:6px;"><strong>Your completion code:</strong></p>
-      <div id="codeDisplay" class="code-display"></div>
-      <label class="field" style="margin-top:16px;">
-        <span>Your name (for verification only)</span>
-        <input type="text" id="inputVerifyName" />
-      </label>
-      <label class="field">
-        <span>Student ID or contact (optional)</span>
-        <input type="text" id="inputVerifyContact" />
-      </label>
-      <div class="btn-row">
-        <button class="btn" onclick="submitVerification()">Submit for verification</button>
-        <button class="btn btn-secondary" onclick="skipVerification()">Skip, stay fully anonymous</button>
-      </div>
-      <p id="verifyStatus" class="status-msg hidden"></p>
-    </div>
-
-    <p id="finalFootnote" class="footnote hidden">You may close this window now. Thank you again for your time.</p>
+    <p class="footnote">You may close this window now. Thank you again for your time.</p>
   </div>
 
 </div>
