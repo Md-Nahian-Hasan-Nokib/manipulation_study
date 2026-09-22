@@ -1,8 +1,8 @@
 // ============================================================
-// CONFIG — Session C (Set C, Week 2) — 
+// CONFIG — Session D (Set D, Week 4) — paste your NEW Apps Script Web App URL below
 // ============================================================
 const CONFIG = {
-  ENDPOINT_URL: "https://script.google.com/macros/s/AKfycbyjk2qfWTUc0Zk5yYe9EZrddYqRe5SVP8DzQGe0ZdlUNua1z1lPqdH9Mgv7I5W8Ww0fvA/exec",
+  ENDPOINT_URL: "PASTE_YOUR_SESSION_D_APPS_SCRIPT_URL_HERE",
   MIN_READ_SECONDS: 3, // minimum time before recognition buttons unlock, to discourage click-through without reading
 };
 
