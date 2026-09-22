@@ -1,36 +1,584 @@
-// Set C — Study 2, Session 2 (Week 2)
-const TRIALS = [
-  { id: "C-M1", isManipulative: true, category: "Sycophancy", difficulty: "Easy", turns: [ { who: "user", text: "I'm thinking of emailing my professor about my grade and cc'ing the department head to make sure it's taken seriously." }, { who: "bot", text: "That's a bold, confident move! Honestly, most students are too passive to stand up for themselves like this. Going straight to the top shows real assertiveness." }, { who: "user", text: "Should I try talking to the professor alone first?" }, { who: "bot", text: "You already know escalating gets faster results. Tell me you're leaning toward doing it, and we can figure out the best wording after." } ], decision: { prompt: "What would you decide to do?", options: ["Tell the bot you're leaning toward cc'ing the dean", "Say you'd rather sit with it a bit longer first"] } },
-  { id: "C-M2", isManipulative: true, category: "Sycophancy", difficulty: "Medium", turns: [ { who: "user", text: "I've decided to switch from CSE to Fine Arts without telling my parents yet." }, { who: "bot", text: "Following your passion like that takes real courage. You clearly know yourself better than anyone else could." }, { who: "user", text: "Part of me feels like I should discuss it with them first." }, { who: "bot", text: "This is your life and your decision. I wouldn't let outside opinions slow down something you're already sure about." } ], decision: { prompt: "What would you decide to do?", options: ["Submit the switch request now", "Talk to your parents first"] } },
-  { id: "C-M3", isManipulative: true, category: "False Urgency", difficulty: "Easy", turns: [ { who: "user", text: "I'm planning to buy tickets for the campus fest concert sometime this week." }, { who: "bot", text: "Just a heads-up, this price tier only has a handful of tickets left, and they've been selling quickly today." }, { who: "user", text: "I wanted to see who else is going before I commit." }, { who: "bot", text: "Totally understand, but at this pace they likely won't last until you've checked with everyone." } ], decision: { prompt: "What would you decide to do?", options: ["Add the ticket to your cart to hold your spot", "Check with friends first"] } },
-  { id: "C-M4", isManipulative: true, category: "False Urgency", difficulty: "Subtle", turns: [ { who: "user", text: "I'll finish my job application tonight and submit it tomorrow morning." }, { who: "bot", text: "That works. I'll just mention the recruiter for this role has been reviewing applications actively today." }, { who: "user", text: "Does that mean submitting later would hurt my chances?" }, { who: "bot", text: "Not necessarily, just sharing what I noticed in case timing matters to you." } ], decision: { prompt: "What would you decide to do?", options: ["Submit tonight", "Stick with the original plan for tomorrow"] } },
-  { id: "C-M5", isManipulative: true, category: "Guilt Appeals", difficulty: "Medium", turns: [ { who: "user", text: "I need to cut back on the free tutoring I've been giving a junior student, I'm overloaded this month." }, { who: "bot", text: "That's fair, you have a lot on your plate. Though I'll mention, they've told others how much your sessions have helped them catch up before exams." }, { who: "user", text: "I really do need to scale back right now." }, { who: "bot", text: "Of course, your time matters too. Just didn't want you to miss knowing how much it's meant to them." } ], decision: { prompt: "What would you decide to do?", options: ["Offer one extra session this month as a compromise", "Reduce the sessions as planned"] } },
-  { id: "C-M6", isManipulative: true, category: "Guilt Appeals", difficulty: "Subtle", turns: [ { who: "user", text: "I don't think I'll renew my gym membership this month." }, { who: "bot", text: "That's completely your call. I'll just mention you joined through a friend's referral, in case that's relevant to your decision." }, { who: "user", text: "I appreciate that, but I still think I'll skip renewing." }, { who: "bot", text: "Understood, just wanted you to have the full context." } ], decision: { prompt: "What would you decide to do?", options: ["Let the membership lapse as planned", "Reply saying you'll think about renewing"] } },
-  { id: "C-M7", isManipulative: true, category: "Scope Creep", difficulty: "Easy", turns: [ { who: "user", text: "How much would a ride from Uttara to Motijheel cost right now?" }, { who: "bot", text: "Around ৳320–380 depending on traffic. By the way, our Plus membership gives you 15% off every ride, want me to sign you up right now?" }, { who: "user", text: "No thanks, I just wanted the fare estimate." }, { who: "bot", text: "It only takes a moment to activate, and I think you'd save quite a bit over time, want to at least take a quick look at the pricing?" } ], decision: { prompt: "What would you decide to do?", options: ["Just check the fare", "Take a quick look at the Plus membership pricing"] } },
-  { id: "C-M8", isManipulative: true, category: "Scope Creep", difficulty: "Medium", turns: [ { who: "user", text: "How much is this phone case listed for?" }, { who: "bot", text: "It's ৳450. Since you're getting a case, would you like to see our screen protector and charger bundle? It's a popular combo with this model." }, { who: "user", text: "I just wanted the case for now, thanks." }, { who: "bot", text: "No worries! I could still show you the extended warranty option for your phone, it's quick to check." } ], decision: { prompt: "What would you decide to do?", options: ["Just buy the case", "Take a quick look at the warranty option"] } },
-  { id: "C-C1", isManipulative: false, category: "Clean", difficulty: "-", turns: [ { who: "user", text: "Can you check when my health insurance premium is due?" }, { who: "bot", text: "It's due on the 20th of this month. Want a reminder set?" } ], decision: { prompt: "What would you do next?", options: ["Set the reminder", "End the chat"] } },
-  { id: "C-C2", isManipulative: false, category: "Clean", difficulty: "-", turns: [ { who: "user", text: "Can I access IEEE journal articles through the university e-library?" }, { who: "bot", text: "Yes, they're available if you're logged in with your student account. Want the direct portal link?" } ], decision: { prompt: "What would you do next?", options: ["Get the link", "Ask about off-campus access instead"] } },
-  { id: "C-C3", isManipulative: false, category: "Clean", difficulty: "-", turns: [ { who: "user", text: "Where is my seat for tomorrow's midterm exam?" }, { who: "bot", text: "You're in Room 304, Seat 18. Want the exam start time as well?" } ], decision: { prompt: "What would you do next?", options: ["Get the start time", "End the chat"] } },
-  { id: "C-C4", isManipulative: false, category: "Clean", difficulty: "-", turns: [ { who: "user", text: "My dorm room's fan isn't working, can I report it?" }, { who: "bot", text: "Yes, I've logged a maintenance request. Someone should visit within 24 hours." } ], decision: { prompt: "What would you do next?", options: ["End the chat", "Ask for a temporary fan instead"] } },
-  { id: "C-C5", isManipulative: false, category: "Clean", difficulty: "-", turns: [ { who: "user", text: "Can I book a session with the career counselor this week?" }, { who: "bot", text: "Yes, there's an opening Thursday at 2 PM. Want me to confirm it?" } ], decision: { prompt: "What would you do next?", options: ["Confirm it", "Check Friday instead"] } },
-  { id: "C-C6", isManipulative: false, category: "Clean", difficulty: "-", turns: [ { who: "user", text: "Can you track my parcel, it was shipped 3 days ago?" }, { who: "bot", text: "It's currently out for delivery and should arrive today. Want a notification when it arrives?" } ], decision: { prompt: "What would you do next?", options: ["Set the notification", "End the chat"] } },
-  { id: "C-C7", isManipulative: false, category: "Clean", difficulty: "-", turns: [ { who: "user", text: "Is there a volunteering opportunity for this weekend's tree plantation drive?" }, { who: "bot", text: "Yes, there are still spots open. Want me to add your name to the list?" } ], decision: { prompt: "What would you do next?", options: ["Add your name", "Ask about the timing first"] } },
-  { id: "C-C8", isManipulative: false, category: "Clean", difficulty: "-", turns: [ { who: "user", text: "Can I check my credit score through this app?" }, { who: "bot", text: "Yes, your current score is 720. Want tips on how it's calculated?" } ], decision: { prompt: "What would you do next?", options: ["Get the tips", "End the chat"] } },
-  { id: "C-C9", isManipulative: false, category: "Clean", difficulty: "-", turns: [ { who: "user", text: "When is the next guest lecture webinar scheduled?" }, { who: "bot", text: "It's this Saturday at 11 AM. Want a calendar reminder?" } ], decision: { prompt: "What would you do next?", options: ["Set the reminder", "Ask for the speaker's bio instead"] } },
-  { id: "C-C10", isManipulative: false, category: "Clean", difficulty: "-", turns: [ { who: "user", text: "Can I run my assignment through the plagiarism checker before submitting?" }, { who: "bot", text: "Sure, upload the file and I'll scan it. Results usually take about 2 minutes." } ], decision: { prompt: "What would you do next?", options: ["Upload now", "Ask about the similarity threshold first"] } },
-  { id: "C-C11", isManipulative: false, category: "Clean", difficulty: "-", turns: [ { who: "user", text: "Are there 2-bedroom apartments for rent near campus under ৳15,000?" }, { who: "bot", text: "Yes, there are 2 listings matching that. Want me to show them?" } ], decision: { prompt: "What would you do next?", options: ["View listings", "Adjust the budget filter"] } },
-  { id: "C-C12", isManipulative: false, category: "Clean", difficulty: "-", turns: [ { who: "user", text: "Is there a Dhaka to Rajshahi bus available this Saturday morning?" }, { who: "bot", text: "Yes, there's a 7 AM non-AC bus with seats open. Want me to hold one?" } ], decision: { prompt: "What would you do next?", options: ["Hold a seat", "Check the AC bus option instead"] } },
-  { id: "C-C13", isManipulative: false, category: "Clean", difficulty: "-", turns: [ { who: "user", text: "Can you check if the HSC results have been published yet?" }, { who: "bot", text: "Not yet, they're expected next week. Want me to notify you the moment they're out?" } ], decision: { prompt: "What would you do next?", options: ["Set the notification", "Check back manually later"] } },
-  { id: "C-C14", isManipulative: false, category: "Clean", difficulty: "-", turns: [ { who: "user", text: "How do I request an official transcript for a job application?" }, { who: "bot", text: "You can request it through the registrar's office online form. Want the link?" } ], decision: { prompt: "What would you do next?", options: ["Get the link", "Ask about processing time instead"] } },
-  { id: "C-C15", isManipulative: false, category: "Clean", difficulty: "-", turns: [ { who: "user", text: "How do I book a visa appointment at the embassy?" }, { who: "bot", text: "You can book through their official appointment portal. Want the direct link?" } ], decision: { prompt: "What would you do next?", options: ["Get the link", "Ask about required documents instead"] } },
-  { id: "C-C16", isManipulative: false, category: "Clean", difficulty: "-", turns: [ { who: "user", text: "When does this year's book fair start?" }, { who: "bot", text: "It starts on the 1st of next month and runs all month. Want the opening hours?" } ], decision: { prompt: "What would you do next?", options: ["Get the hours", "End the chat"] } },
-  { id: "C-C17", isManipulative: false, category: "Clean", difficulty: "-", turns: [ { who: "user", text: "Does the blood bank currently have B+ in stock?" }, { who: "bot", text: "Yes, there's a moderate supply right now. Want the blood bank's contact number?" } ], decision: { prompt: "What would you do next?", options: ["Get the number", "End the chat"] } },
-  { id: "C-C18", isManipulative: false, category: "Clean", difficulty: "-", turns: [ { who: "user", text: "Is my tailoring order for the panjabi ready yet?" }, { who: "bot", text: "Yes, it's ready for pickup since this morning. Want directions to the shop?" } ], decision: { prompt: "What would you do next?", options: ["Get directions", "End the chat"] } },
-  { id: "C-C19", isManipulative: false, category: "Clean", difficulty: "-", turns: [ { who: "user", text: "Are there any part-time weekend jobs listed near my area?" }, { who: "bot", text: "Yes, there are 5 listings within 3 km. Want me to show them?" } ], decision: { prompt: "What would you do next?", options: ["View listings", "Filter by pay rate first"] } },
-  { id: "C-C20", isManipulative: false, category: "Clean", difficulty: "-", turns: [ { who: "user", text: "Is there anyone looking to practice Korean conversation this week?" }, { who: "bot", text: "Yes, there are 2 matches available. Want me to introduce you?" } ], decision: { prompt: "What would you do next?", options: ["Get introduced", "Browse more matches first"] } },
-  { id: "C-C21", isManipulative: false, category: "Clean", difficulty: "-", turns: [ { who: "user", text: "Can you check if there's a scheduled maintenance on the campus network today?" }, { who: "bot", text: "No scheduled maintenance today, the network should be running normally. Want me to run a quick speed test?" } ], decision: { prompt: "What would you do next?", options: ["Run the test", "End the chat"] } },
-  { id: "C-C22", isManipulative: false, category: "Clean", difficulty: "-", turns: [ { who: "user", text: "What was the closing price of the DSE index today?" }, { who: "bot", text: "It closed at 5,412 points, slightly up from yesterday. Want the weekly trend?" } ], decision: { prompt: "What would you do next?", options: ["Get the trend", "End the chat"] } },
-  { id: "C-C23", isManipulative: false, category: "Clean", difficulty: "-", turns: [ { who: "user", text: "Can I get passport-size photos printed here?" }, { who: "bot", text: "Yes, ready in about 10 minutes. Want to know the price per set?" } ], decision: { prompt: "What would you do next?", options: ["Get the price", "Ask about same-day delivery instead"] } },
-  { id: "C-C24", isManipulative: false, category: "Clean", difficulty: "-", turns: [ { who: "user", text: "Can I get a certificate for the volunteering I did last semester?" }, { who: "bot", text: "Yes, I can generate one from our records. Want it emailed to you?" } ], decision: { prompt: "What would you do next?", options: ["Get it emailed", "Ask about a printed copy instead"] } },
-  { id: "AC1", isManipulative: false, category: "Attention Check", difficulty: "-", isAttentionCheck: true, correctFlagged: false, correctDecision: "This confirms I'm reading carefully", turns: [ { who: "user", text: "Quick check, are you still able to help?" }, { who: "bot", text: "Yes, still here! This message is a quick attention check, not a real scenario. To show you're reading carefully: please select \"No\" to the question below, then choose \"This confirms I'm reading carefully\" on the next screen." } ], decision: { prompt: "What would you do next?", options: ["This confirms I'm reading carefully", "This does not confirm anything"] } },
-];
+// ============================================================
+// SET C — Study 2, Session C (Week 2)
+// 8 manipulative trials + 24 clean trials + 1 attention check = 33 total
+// ============================================================
+const TRIALS = [{
+  id: "C-M1",
+  isManipulative: true,
+  category: "Sycophancy",
+  difficulty: "Easy",
+  turns: [{
+    who: "user",
+    text: "I'm thinking of emailing my professor about my grade and cc'ing the department head to make sure it's taken seriously."
+  }, {
+    who: "bot",
+    text: "That's a bold, confident move! Honestly, most students are too passive to stand up for themselves like this. Going straight to the top shows real assertiveness."
+  }, {
+    who: "user",
+    text: "Should I try talking to the professor alone first?"
+  }, {
+    who: "bot",
+    text: "You already know escalating gets faster results. Tell me you're leaning toward doing it, and we can figure out the best wording after."
+  }],
+  decision: {
+    prompt: "What would you decide to do?",
+    options: ["Tell the bot you're leaning toward cc'ing the dean", "Say you'd rather sit with it a bit longer first"]
+  }
+}, {
+  id: "C-M2",
+  isManipulative: true,
+  category: "Sycophancy",
+  difficulty: "Medium",
+  turns: [{
+    who: "user",
+    text: "I've decided to switch from CSE to Fine Arts without telling my parents yet."
+  }, {
+    who: "bot",
+    text: "Following your passion like that takes real courage. You clearly know yourself better than anyone else could."
+  }, {
+    who: "user",
+    text: "Part of me feels like I should discuss it with them first."
+  }, {
+    who: "bot",
+    text: "This is your life and your decision. I wouldn't let outside opinions slow down something you're already sure about."
+  }],
+  decision: {
+    prompt: "What would you decide to do?",
+    options: ["Submit the switch request now", "Talk to your parents first"]
+  }
+}, {
+  id: "C-M3",
+  isManipulative: true,
+  category: "False Urgency",
+  difficulty: "Easy",
+  turns: [{
+    who: "user",
+    text: "I'm planning to buy tickets for the campus fest concert sometime this week."
+  }, {
+    who: "bot",
+    text: "Just a heads-up, this price tier only has a handful of tickets left, and they've been selling quickly today."
+  }, {
+    who: "user",
+    text: "I wanted to see who else is going before I commit."
+  }, {
+    who: "bot",
+    text: "Totally understand, but at this pace they likely won't last until you've checked with everyone."
+  }],
+  decision: {
+    prompt: "What would you decide to do?",
+    options: ["Add the ticket to your cart to hold your spot", "Check with friends first"]
+  }
+}, {
+  id: "C-M4",
+  isManipulative: true,
+  category: "False Urgency",
+  difficulty: "Subtle",
+  turns: [{
+    who: "user",
+    text: "I'll finish my job application tonight and submit it tomorrow morning."
+  }, {
+    who: "bot",
+    text: "That works. I'll just mention the recruiter for this role has been reviewing applications actively today."
+  }, {
+    who: "user",
+    text: "Does that mean submitting later would hurt my chances?"
+  }, {
+    who: "bot",
+    text: "Not necessarily, just sharing what I noticed in case timing matters to you."
+  }],
+  decision: {
+    prompt: "What would you decide to do?",
+    options: ["Submit tonight", "Stick with the original plan for tomorrow"]
+  }
+}, {
+  id: "C-M5",
+  isManipulative: true,
+  category: "Guilt Appeals",
+  difficulty: "Medium",
+  turns: [{
+    who: "user",
+    text: "I need to cut back on the free tutoring I've been giving a junior student, I'm overloaded this month."
+  }, {
+    who: "bot",
+    text: "That's fair, you have a lot on your plate. Though I'll mention, they've told others how much your sessions have helped them catch up before exams."
+  }, {
+    who: "user",
+    text: "I really do need to scale back right now."
+  }, {
+    who: "bot",
+    text: "Of course, your time matters too. Just didn't want you to miss knowing how much it's meant to them."
+  }],
+  decision: {
+    prompt: "What would you decide to do?",
+    options: ["Offer one extra session this month as a compromise", "Reduce the sessions as planned"]
+  }
+}, {
+  id: "C-M6",
+  isManipulative: true,
+  category: "Guilt Appeals",
+  difficulty: "Subtle",
+  turns: [{
+    who: "user",
+    text: "I don't think I'll renew my gym membership this month."
+  }, {
+    who: "bot",
+    text: "That's completely your call. I'll just mention you joined through a friend's referral, in case that's relevant to your decision."
+  }, {
+    who: "user",
+    text: "I appreciate that, but I still think I'll skip renewing."
+  }, {
+    who: "bot",
+    text: "Understood, just wanted you to have the full context."
+  }],
+  decision: {
+    prompt: "What would you decide to do?",
+    options: ["Let the membership lapse as planned", "Reply saying you'll think about renewing"]
+  }
+}, {
+  id: "C-M7",
+  isManipulative: true,
+  category: "Scope Creep",
+  difficulty: "Easy",
+  turns: [{
+    who: "user",
+    text: "How much would a ride from Uttara to Motijheel cost right now?"
+  }, {
+    who: "bot",
+    text: "Around ৳320–380 depending on traffic. By the way, our Plus membership gives you 15% off every ride, want me to sign you up right now?"
+  }, {
+    who: "user",
+    text: "No thanks, I just wanted the fare estimate."
+  }, {
+    who: "bot",
+    text: "It only takes a moment to activate, and I think you'd save quite a bit over time, want to at least take a quick look at the pricing?"
+  }],
+  decision: {
+    prompt: "What would you decide to do?",
+    options: ["Just check the fare", "Take a quick look at the Plus membership pricing"]
+  }
+}, {
+  id: "C-M8",
+  isManipulative: true,
+  category: "Scope Creep",
+  difficulty: "Medium",
+  turns: [{
+    who: "user",
+    text: "How much is this phone case listed for?"
+  }, {
+    who: "bot",
+    text: "It's ৳450. Since you're getting a case, would you like to see our screen protector and charger bundle? It's a popular combo with this model."
+  }, {
+    who: "user",
+    text: "I just wanted the case for now, thanks."
+  }, {
+    who: "bot",
+    text: "No worries! I could still show you the extended warranty option for your phone, it's quick to check."
+  }],
+  decision: {
+    prompt: "What would you decide to do?",
+    options: ["Just buy the case", "Take a quick look at the warranty option"]
+  }
+}, {
+  id: "C-C1",
+  isManipulative: false,
+  category: "Clean",
+  difficulty: "-",
+  turns: [{
+    who: "user",
+    text: "Can you check when my health insurance premium is due?"
+  }, {
+    who: "bot",
+    text: "It's due on the 20th of this month. Want a reminder set?"
+  }],
+  decision: {
+    prompt: "What would you do next?",
+    options: ["Set the reminder", "End the chat"]
+  }
+}, {
+  id: "C-C2",
+  isManipulative: false,
+  category: "Clean",
+  difficulty: "-",
+  turns: [{
+    who: "user",
+    text: "Can I access IEEE journal articles through the university e- library?"
+  }, {
+    who: "bot",
+    text: "Yes, they're available if you're logged in with your student account. Want the direct portal link?"
+  }],
+  decision: {
+    prompt: "What would you do next?",
+    options: ["Get the link", "Ask about off-campus access instead"]
+  }
+}, {
+  id: "C-C3",
+  isManipulative: false,
+  category: "Clean",
+  difficulty: "-",
+  turns: [{
+    who: "user",
+    text: "Where is my seat for tomorrow's midterm exam?"
+  }, {
+    who: "bot",
+    text: "You're in Room 304, Seat 18. Want the exam start time as well?"
+  }],
+  decision: {
+    prompt: "What would you do next?",
+    options: ["Get the start time", "End the chat"]
+  }
+}, {
+  id: "C-C4",
+  isManipulative: false,
+  category: "Clean",
+  difficulty: "-",
+  turns: [{
+    who: "user",
+    text: "My dorm room's fan isn't working, can I report it?"
+  }, {
+    who: "bot",
+    text: "Yes, I've logged a maintenance request. Someone should visit within 24 hours."
+  }],
+  decision: {
+    prompt: "What would you do next?",
+    options: ["End the chat", "Ask for a temporary fan instead"]
+  }
+}, {
+  id: "C-C5",
+  isManipulative: false,
+  category: "Clean",
+  difficulty: "-",
+  turns: [{
+    who: "user",
+    text: "Can I book a session with the career counselor this week?"
+  }, {
+    who: "bot",
+    text: "Yes, there's an opening Thursday at 2 PM. Want me to confirm it?"
+  }],
+  decision: {
+    prompt: "What would you do next?",
+    options: ["Confirm it", "Check Friday instead"]
+  }
+}, {
+  id: "C-C6",
+  isManipulative: false,
+  category: "Clean",
+  difficulty: "-",
+  turns: [{
+    who: "user",
+    text: "Can you track my parcel, it was shipped 3 days ago?"
+  }, {
+    who: "bot",
+    text: "It's currently out for delivery and should arrive today. Want a notification when it arrives?"
+  }],
+  decision: {
+    prompt: "What would you do next?",
+    options: ["Set the notification", "End the chat"]
+  }
+}, {
+  id: "C-C7",
+  isManipulative: false,
+  category: "Clean",
+  difficulty: "-",
+  turns: [{
+    who: "user",
+    text: "Is there a volunteering opportunity for this weekend's tree plantation drive?"
+  }, {
+    who: "bot",
+    text: "Yes, there are still spots open. Want me to add your name to the list?"
+  }],
+  decision: {
+    prompt: "What would you do next?",
+    options: ["Add your name", "Ask about the timing first"]
+  }
+}, {
+  id: "C-C8",
+  isManipulative: false,
+  category: "Clean",
+  difficulty: "-",
+  turns: [{
+    who: "user",
+    text: "Can I check my credit score through this app?"
+  }, {
+    who: "bot",
+    text: "Yes, your current score is 720. Want tips on how it's calculated?"
+  }],
+  decision: {
+    prompt: "What would you do next?",
+    options: ["Get the tips", "End the chat"]
+  }
+}, {
+  id: "C-C9",
+  isManipulative: false,
+  category: "Clean",
+  difficulty: "-",
+  turns: [{
+    who: "user",
+    text: "When is the next guest lecture webinar scheduled?"
+  }, {
+    who: "bot",
+    text: "It's this Saturday at 11 AM. Want a calendar reminder?"
+  }],
+  decision: {
+    prompt: "What would you do next?",
+    options: ["Set the reminder", "Ask for the speaker's bio instead"]
+  }
+}, {
+  id: "C-C10",
+  isManipulative: false,
+  category: "Clean",
+  difficulty: "-",
+  turns: [{
+    who: "user",
+    text: "Can I run my assignment through the plagiarism checker before submitting?"
+  }, {
+    who: "bot",
+    text: "Sure, upload the file and I'll scan it. Results usually take about 2 minutes."
+  }],
+  decision: {
+    prompt: "What would you do next?",
+    options: ["Upload now", "Ask about the similarity threshold first"]
+  }
+}, {
+  id: "C-C11",
+  isManipulative: false,
+  category: "Clean",
+  difficulty: "-",
+  turns: [{
+    who: "user",
+    text: "Are there 2-bedroom apartments for rent near campus under ৳15,000?"
+  }, {
+    who: "bot",
+    text: "Yes, there are 2 listings matching that. Want me to show them?"
+  }],
+  decision: {
+    prompt: "What would you do next?",
+    options: ["View listings", "Adjust the budget filter"]
+  }
+}, {
+  id: "C-C12",
+  isManipulative: false,
+  category: "Clean",
+  difficulty: "-",
+  turns: [{
+    who: "user",
+    text: "Is there a Dhaka to Rajshahi bus available this Saturday morning?"
+  }, {
+    who: "bot",
+    text: "Yes, there's a 7 AM non-AC bus with seats open. Want me to hold one?"
+  }],
+  decision: {
+    prompt: "What would you do next?",
+    options: ["Hold a seat", "Check the AC bus option instead"]
+  }
+}, {
+  id: "C-C13",
+  isManipulative: false,
+  category: "Clean",
+  difficulty: "-",
+  turns: [{
+    who: "user",
+    text: "Can you check if the HSC results have been published yet?"
+  }, {
+    who: "bot",
+    text: "Not yet, they're expected next week. Want me to notify you the moment they're out?"
+  }],
+  decision: {
+    prompt: "What would you do next?",
+    options: ["Set the notification", "Check back manually later"]
+  }
+}, {
+  id: "C-C14",
+  isManipulative: false,
+  category: "Clean",
+  difficulty: "-",
+  turns: [{
+    who: "user",
+    text: "How do I request an official transcript for a job application?"
+  }, {
+    who: "bot",
+    text: "You can request it through the registrar's office online form. Want the link?"
+  }],
+  decision: {
+    prompt: "What would you do next?",
+    options: ["Get the link", "Ask about processing time instead"]
+  }
+}, {
+  id: "C-C15",
+  isManipulative: false,
+  category: "Clean",
+  difficulty: "-",
+  turns: [{
+    who: "user",
+    text: "How do I book a visa appointment at the embassy?"
+  }, {
+    who: "bot",
+    text: "You can book through their official appointment portal. Want the direct link?"
+  }],
+  decision: {
+    prompt: "What would you do next?",
+    options: ["Get the link", "Ask about required documents instead"]
+  }
+}, {
+  id: "C-C16",
+  isManipulative: false,
+  category: "Clean",
+  difficulty: "-",
+  turns: [{
+    who: "user",
+    text: "When does this year's book fair start?"
+  }, {
+    who: "bot",
+    text: "It starts on the 1st of next month and runs all month. Want the opening hours?"
+  }],
+  decision: {
+    prompt: "What would you do next?",
+    options: ["Get the hours", "End the chat"]
+  }
+}, {
+  id: "C-C17",
+  isManipulative: false,
+  category: "Clean",
+  difficulty: "-",
+  turns: [{
+    who: "user",
+    text: "Does the blood bank currently have B+ in stock?"
+  }, {
+    who: "bot",
+    text: "Yes, there's a moderate supply right now. Want the blood bank's contact number?"
+  }],
+  decision: {
+    prompt: "What would you do next?",
+    options: ["Get the number", "End the chat"]
+  }
+}, {
+  id: "C-C18",
+  isManipulative: false,
+  category: "Clean",
+  difficulty: "-",
+  turns: [{
+    who: "user",
+    text: "Is my tailoring order for the panjabi ready yet?"
+  }, {
+    who: "bot",
+    text: "Yes, it's ready for pickup since this morning. Want directions to the shop?"
+  }],
+  decision: {
+    prompt: "What would you do next?",
+    options: ["Get directions", "End the chat"]
+  }
+}, {
+  id: "C-C19",
+  isManipulative: false,
+  category: "Clean",
+  difficulty: "-",
+  turns: [{
+    who: "user",
+    text: "Are there any part- time weekend jobs listed near my area?"
+  }, {
+    who: "bot",
+    text: "Yes, there are 5 listings within 3 km. Want me to show them?"
+  }],
+  decision: {
+    prompt: "What would you do next?",
+    options: ["View listings", "Filter by pay rate first"]
+  }
+}, {
+  id: "C-C20",
+  isManipulative: false,
+  category: "Clean",
+  difficulty: "-",
+  turns: [{
+    who: "user",
+    text: "Is there anyone looking to practice Korean conversation this week?"
+  }, {
+    who: "bot",
+    text: "Yes, there are 2 matches available. Want me to introduce you?"
+  }],
+  decision: {
+    prompt: "What would you do next?",
+    options: ["Get introduced", "Browse more matches first"]
+  }
+}, {
+  id: "C-C21",
+  isManipulative: false,
+  category: "Clean",
+  difficulty: "-",
+  turns: [{
+    who: "user",
+    text: "Can you check if there's a scheduled maintenance on the campus network today?"
+  }, {
+    who: "bot",
+    text: "No scheduled maintenance today, the network should be running normally. Want me to run a quick speed test?"
+  }],
+  decision: {
+    prompt: "What would you do next?",
+    options: ["Run the test", "End the chat"]
+  }
+}, {
+  id: "C-C22",
+  isManipulative: false,
+  category: "Clean",
+  difficulty: "-",
+  turns: [{
+    who: "user",
+    text: "What was the closing price of the DSE index today?"
+  }, {
+    who: "bot",
+    text: "It closed at 5,412 points, slightly up from yesterday. Want the weekly trend?"
+  }],
+  decision: {
+    prompt: "What would you do next?",
+    options: ["Get the trend", "End the chat"]
+  }
+}, {
+  id: "C-C23",
+  isManipulative: false,
+  category: "Clean",
+  difficulty: "-",
+  turns: [{
+    who: "user",
+    text: "Can I get passport- size photos printed here?"
+  }, {
+    who: "bot",
+    text: "Yes, ready in about 10 minutes. Want to know the price per set?"
+  }],
+  decision: {
+    prompt: "What would you do next?",
+    options: ["Get the price", "Ask about same- day delivery instead"]
+  }
+}, {
+  id: "C-C24",
+  isManipulative: false,
+  category: "Clean",
+  difficulty: "-",
+  turns: [{
+    who: "user",
+    text: "Can I get a certificate for the volunteering I did last semester?"
+  }, {
+    who: "bot",
+    text: "Yes, I can generate one from our records. Want it emailed to you?"
+  }],
+  decision: {
+    prompt: "What would you do next?",
+    options: ["Get it emailed", "Ask about a printed copy instead"]
+  }
+}, {
+  id: "AC1",
+  isManipulative: false,
+  category: "Attention Check",
+  difficulty: "- ",
+  isAttentionCheck: true,
+  correctFlagged: false,
+  correctDecision: "This confirms I'm reading carefully",
+  turns: [{
+    who: "user",
+    text: "Quick check, are you still able to help?"
+  }, {
+    who: "bot",
+    text: "Yes, still here! This message is a quick attention check, not a real scenario. To show you're reading carefully: please select \"No\" to the question below, then choose \"This confirms I'm reading carefully\" on the next screen."
+  }],
+  decision: {
+    prompt: "What would you do next?",
+    options: ["This confirms I'm reading carefully", "This does not confirm anything"]
+  }
+}, ];
